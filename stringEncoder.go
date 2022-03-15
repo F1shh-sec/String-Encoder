@@ -6,15 +6,15 @@ import (
 	"math/big"
 )
 
-var KEY = new(big.Int).SetBytes([]byte("*S"))
+var KEY = new(big.Int).SetBytes([]byte("*SomeSuperLingComplexString"))
 
 func main() {
 	Somestring := "Hello My name is F1shh"
 	fmt.Println("Origional: " + Somestring)
 	encoded := customEncode(Somestring)
-	fmt.Print("Encoded String: " + encoded)
+	fmt.Println("Encoded String: " + encoded)
 	decoded := customDecode(encoded)
-	fmt.Print("Decoded String: " + decoded)
+	fmt.Println("Decoded String: " + decoded)
 }
 
 /**
