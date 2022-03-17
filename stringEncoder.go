@@ -41,54 +41,52 @@ func customEncode(text string) string {
 	bigint := new(big.Int).SetBytes(bytetext)
 
 	keyByteArr := KEY.Bytes()
+	// If we need to shorten the Key
 	if len(KEY.Bytes()) > len(bigint.Bytes()) {
-
 		// Creates a new key of the first few bits of the key
 		NewKey := new(big.Int).SetBytes(keyByteArr[:len(bytetext)])
 		xorString := new(big.Int).Xor(bigint, NewKey)
 		encode := b64_encode(string(xorString.Bytes()))
 		return encode
 	} else {
+		// If we need to lengthen the key
 		howMuchBigger := len(bytetext) / len(keyByteArr)
 		if howMuchBigger < 2 {
+			// If we only need to lengthen it a little bit
 			missingbytes := len(bytetext) - len(keyByteArr)
 			NewKey := new(big.Int).SetBytes(keyByteArr[:missingbytes])
-			final := append(keyByteArr, NewKey.Bytes()...)
-			finalKey := new(big.Int).SetBytes(final)
-			xorString := new(big.Int).Xor(bigint, finalKey)
-			encode := b64_encode(string(xorString.Bytes()))
+			finalKey := new(big.Int).SetBytes(append(keyByteArr, NewKey.Bytes()...))
+			encode := b64_encode(string(new(big.Int).Xor(bigint, finalKey).Bytes()))
 			return encode
 		} else {
+			// Extends the key by a factor greater then 2
 			extendedkey := new(big.Int)
 			newKeyArray := keyByteArr
-			fmt.Println(howMuchBigger)
+			// Extends key
 			for i := 1; i < howMuchBigger; i++ {
 				newKeyArray = append(newKeyArray, keyByteArr...)
 				if i == howMuchBigger-1 {
 					extendedkey.SetBytes(newKeyArray)
 				}
 			}
-
+			// Calculates remaining difference
 			missingbytes := len(bytetext) - len(extendedkey.Bytes())
 			NewKey := new(big.Int).SetBytes(keyByteArr[:missingbytes])
-			final := append(extendedkey.Bytes(), NewKey.Bytes()...)
-			finalKey := new(big.Int).SetBytes(final)
-			xorString := new(big.Int).Xor(bigint, finalKey)
-			encode := b64_encode(string(xorString.Bytes()))
+			// Xor encodes
+			finalKey := new(big.Int).SetBytes(append(extendedkey.Bytes(), NewKey.Bytes()...))
+			encode := b64_encode(string(new(big.Int).Xor(bigint, finalKey).Bytes()))
 			return encode
 		}
 	}
 	return "hello"
 }
-
 func customDecode(text string) string {
-	decode := b64_decode(text)
-	decodedStr := []byte(decode)
+	//Reverses order of b64 encode from Custom Encode function
+	decodedStr := []byte(b64_decode(text))
 	decodeBigInt := new(big.Int).SetBytes(decodedStr)
 
 	keyByteArr := KEY.Bytes()
 	if len(KEY.Bytes()) > len(decodeBigInt.Bytes()) {
-
 		// Creates a new key of the first few bits of the key
 		NewKey := new(big.Int).SetBytes(keyByteArr[:len(decodedStr)])
 		xorString := new(big.Int).Xor(decodeBigInt, NewKey)
@@ -98,10 +96,8 @@ func customDecode(text string) string {
 		if howMuchBigger < 2 {
 			missingbytes := len(decodedStr) - len(keyByteArr)
 			NewKey := new(big.Int).SetBytes(keyByteArr[:missingbytes])
-			final := append(keyByteArr, NewKey.Bytes()...)
-			finalKey := new(big.Int).SetBytes(final)
-			xorString := new(big.Int).Xor(decodeBigInt, finalKey)
-			return string(xorString.Bytes())
+			finalKey := new(big.Int).SetBytes(append(keyByteArr, NewKey.Bytes()...))
+			return string(new(big.Int).Xor(decodeBigInt, finalKey).Bytes())
 		} else {
 			extendedkey := new(big.Int)
 			newKeyArray := keyByteArr
@@ -113,10 +109,8 @@ func customDecode(text string) string {
 			}
 			missingbytes := len(decodedStr) - len(extendedkey.Bytes())
 			NewKey := new(big.Int).SetBytes(keyByteArr[:missingbytes])
-			final := append(extendedkey.Bytes(), NewKey.Bytes()...)
-			finalKey := new(big.Int).SetBytes(final)
-			xorString := new(big.Int).Xor(decodeBigInt, finalKey)
-			return string(xorString.Bytes())
+			finalKey := new(big.Int).SetBytes(append(extendedkey.Bytes(), NewKey.Bytes()...))
+			return string(new(big.Int).Xor(decodeBigInt, finalKey).Bytes())
 		}
 	}
 	return "hello"
