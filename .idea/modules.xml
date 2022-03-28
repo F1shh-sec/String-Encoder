@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/String-Encoder.iml" filepath="$PROJECT_DIR$/.idea/String-Encoder.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../go-Reverse-Shell/.idea/go-Reverse-Shell.iml" filepath="$PROJECT_DIR$/../../go-Reverse-Shell/.idea/go-Reverse-Shell.iml" />
     </modules>
   </component>
 </project>

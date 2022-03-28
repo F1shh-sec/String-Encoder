@@ -38,6 +38,7 @@ func b64_decode(text string) string {
 
 /**
 OPERATIONS:
+KEY EXPANSION
 XOR STRING
 BASE64
 */
@@ -81,17 +82,10 @@ func customEncode(text string) string {
 	}
 	return "hello"
 }
-
-/**
-OPERATIONS:
-BASE54
-XOR STRING
-*/
 func customDecode(text string) string {
 	//Reverses order of b64 encode from Custom Encode function
 	decodedStr := []byte(b64_decode(text))
 	decodeBigInt := new(big.Int).SetBytes(decodedStr)
-
 	keyByteArr := KEY.Bytes()
 	if len(KEY.Bytes()) > len(decodeBigInt.Bytes()) {
 		// Creates a new key of the first few bits of the key
@@ -113,7 +107,7 @@ func customDecode(text string) string {
 					extendedkey.SetBytes(newKeyArray)
 				}
 			}
-			missingbytes = len(extendedkey.Bytes()) - len(decodedStr)
+			missingbytes = len(decodedStr) - len(extendedkey.Bytes())
 			bytesToAppend = extendedkey.Bytes()
 		}
 		NewKey := new(big.Int).SetBytes(keyByteArr[:missingbytes])
@@ -121,5 +115,4 @@ func customDecode(text string) string {
 		return string(new(big.Int).Xor(decodeBigInt, finalKey).Bytes())
 	}
 	return "hello"
-
 }
